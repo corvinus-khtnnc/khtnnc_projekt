@@ -1,0 +1,469 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="TicketModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Idopont">
+          <Key>
+            <PropertyRef Name="IdopontSK" />
+          </Key>
+          <Property Name="IdopontSK" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="EloadasNap" Type="date" Nullable="false" />
+          <Property Name="Kezdes" Type="datetime" />
+          <Property Name="Befejezes" Type="datetime" />
+        </EntityType>
+        <EntityType Name="Jegytipus">
+          <Key>
+            <PropertyRef Name="JegytipusSK" />
+          </Key>
+          <Property Name="JegytipusSK" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Megnevezes" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Egysegar" Type="float" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Rendeles">
+          <Key>
+            <PropertyRef Name="RendelesSK" />
+          </Key>
+          <Property Name="RendelesSK" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="VevoFK" Type="int" Nullable="false" />
+          <Property Name="Fizetesi_mod" Type="nvarchar" MaxLength="50" />
+          <Property Name="Rend_datum" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Rendelesi_tetel">
+          <Key>
+            <PropertyRef Name="TetelekSK" />
+          </Key>
+          <Property Name="TetelekSK" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="RendelesFK" Type="int" Nullable="false" />
+          <Property Name="SzindarabFK" Type="int" Nullable="false" />
+          <Property Name="JegytipusFK" Type="int" Nullable="false" />
+          <Property Name="Mennyiség" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Szindarab">
+          <Key>
+            <PropertyRef Name="SzindarabSK" />
+          </Key>
+          <Property Name="SzindarabSK" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="SzinhazFK" Type="int" Nullable="false" />
+          <Property Name="Cim" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Rendezo" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="IdopontFK" Type="int" Nullable="false" />
+          <Property Name="Musorido" Type="int" Nullable="false" />
+          <Property Name="UjDarabE" Type="bit" />
+        </EntityType>
+        <EntityType Name="Szinhaz">
+          <Key>
+            <PropertyRef Name="SzinhazSK" />
+          </Key>
+          <Property Name="SzinhazSK" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Nev" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Helyszin" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Email" Type="nchar" MaxLength="50" Nullable="false" />
+          <Property Name="Telefon" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Vevo">
+          <Key>
+            <PropertyRef Name="VevoSK" />
+          </Key>
+          <Property Name="VevoSK" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Teljes_nev" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Eletkor" Type="int" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_Rendeles_ToVevo">
+          <End Role="Vevo" Type="Self.Vevo" Multiplicity="1" />
+          <End Role="Rendeles" Type="Self.Rendeles" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Vevo">
+              <PropertyRef Name="VevoSK" />
+            </Principal>
+            <Dependent Role="Rendeles">
+              <PropertyRef Name="VevoFK" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Rendelesi_tetel_ToJegytipus">
+          <End Role="Jegytipus" Type="Self.Jegytipus" Multiplicity="1" />
+          <End Role="Rendelesi_tetel" Type="Self.Rendelesi_tetel" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Jegytipus">
+              <PropertyRef Name="JegytipusSK" />
+            </Principal>
+            <Dependent Role="Rendelesi_tetel">
+              <PropertyRef Name="JegytipusFK" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Rendelesi_tetel_ToRendeles">
+          <End Role="Rendeles" Type="Self.Rendeles" Multiplicity="1" />
+          <End Role="Rendelesi_tetel" Type="Self.Rendelesi_tetel" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Rendeles">
+              <PropertyRef Name="RendelesSK" />
+            </Principal>
+            <Dependent Role="Rendelesi_tetel">
+              <PropertyRef Name="RendelesFK" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Rendelesi_tetel_ToSzindarab">
+          <End Role="Szindarab" Type="Self.Szindarab" Multiplicity="1" />
+          <End Role="Rendelesi_tetel" Type="Self.Rendelesi_tetel" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Szindarab">
+              <PropertyRef Name="SzindarabSK" />
+            </Principal>
+            <Dependent Role="Rendelesi_tetel">
+              <PropertyRef Name="SzindarabFK" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Szindarab_ToIdopont">
+          <End Role="Idopont" Type="Self.Idopont" Multiplicity="1" />
+          <End Role="Szindarab" Type="Self.Szindarab" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Idopont">
+              <PropertyRef Name="IdopontSK" />
+            </Principal>
+            <Dependent Role="Szindarab">
+              <PropertyRef Name="IdopontFK" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Szindarab_ToSzinhaz">
+          <End Role="Szinhaz" Type="Self.Szinhaz" Multiplicity="1" />
+          <End Role="Szindarab" Type="Self.Szindarab" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Szinhaz">
+              <PropertyRef Name="SzinhazSK" />
+            </Principal>
+            <Dependent Role="Szindarab">
+              <PropertyRef Name="SzinhazFK" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="TicketModelStoreContainer">
+          <EntitySet Name="Idopont" EntityType="Self.Idopont" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Jegytipus" EntityType="Self.Jegytipus" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Rendeles" EntityType="Self.Rendeles" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Rendelesi_tetel" EntityType="Self.Rendelesi_tetel" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Szindarab" EntityType="Self.Szindarab" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Szinhaz" EntityType="Self.Szinhaz" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Vevo" EntityType="Self.Vevo" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Rendeles_ToVevo" Association="Self.FK_Rendeles_ToVevo">
+            <End Role="Vevo" EntitySet="Vevo" />
+            <End Role="Rendeles" EntitySet="Rendeles" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Rendelesi_tetel_ToJegytipus" Association="Self.FK_Rendelesi_tetel_ToJegytipus">
+            <End Role="Jegytipus" EntitySet="Jegytipus" />
+            <End Role="Rendelesi_tetel" EntitySet="Rendelesi_tetel" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Rendelesi_tetel_ToRendeles" Association="Self.FK_Rendelesi_tetel_ToRendeles">
+            <End Role="Rendeles" EntitySet="Rendeles" />
+            <End Role="Rendelesi_tetel" EntitySet="Rendelesi_tetel" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Rendelesi_tetel_ToSzindarab" Association="Self.FK_Rendelesi_tetel_ToSzindarab">
+            <End Role="Szindarab" EntitySet="Szindarab" />
+            <End Role="Rendelesi_tetel" EntitySet="Rendelesi_tetel" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Szindarab_ToIdopont" Association="Self.FK_Szindarab_ToIdopont">
+            <End Role="Idopont" EntitySet="Idopont" />
+            <End Role="Szindarab" EntitySet="Szindarab" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Szindarab_ToSzinhaz" Association="Self.FK_Szindarab_ToSzinhaz">
+            <End Role="Szinhaz" EntitySet="Szinhaz" />
+            <End Role="Szindarab" EntitySet="Szindarab" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="TicketModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Idopont">
+          <Key>
+            <PropertyRef Name="IdopontSK" />
+          </Key>
+          <Property Name="IdopontSK" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="EloadasNap" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="Kezdes" Type="DateTime" Precision="3" />
+          <Property Name="Befejezes" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Szindarab" Relationship="Self.FK_Szindarab_ToIdopont" FromRole="Idopont" ToRole="Szindarab" />
+        </EntityType>
+        <EntityType Name="Jegytipus">
+          <Key>
+            <PropertyRef Name="JegytipusSK" />
+          </Key>
+          <Property Name="JegytipusSK" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Megnevezes" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Egysegar" Type="Double" Nullable="false" />
+          <NavigationProperty Name="Rendelesi_tetel" Relationship="Self.FK_Rendelesi_tetel_ToJegytipus" FromRole="Jegytipus" ToRole="Rendelesi_tetel" />
+        </EntityType>
+        <EntityType Name="Rendeles">
+          <Key>
+            <PropertyRef Name="RendelesSK" />
+          </Key>
+          <Property Name="RendelesSK" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="VevoFK" Type="Int32" Nullable="false" />
+          <Property Name="Fizetesi_mod" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Rend_datum" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="Vevo" Relationship="Self.FK_Rendeles_ToVevo" FromRole="Rendeles" ToRole="Vevo" />
+          <NavigationProperty Name="Rendelesi_tetel" Relationship="Self.FK_Rendelesi_tetel_ToRendeles" FromRole="Rendeles" ToRole="Rendelesi_tetel" />
+        </EntityType>
+        <EntityType Name="Rendelesi_tetel">
+          <Key>
+            <PropertyRef Name="TetelekSK" />
+          </Key>
+          <Property Name="TetelekSK" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RendelesFK" Type="Int32" Nullable="false" />
+          <Property Name="SzindarabFK" Type="Int32" Nullable="false" />
+          <Property Name="JegytipusFK" Type="Int32" Nullable="false" />
+          <Property Name="Mennyiség" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Jegytipus" Relationship="Self.FK_Rendelesi_tetel_ToJegytipus" FromRole="Rendelesi_tetel" ToRole="Jegytipus" />
+          <NavigationProperty Name="Rendeles" Relationship="Self.FK_Rendelesi_tetel_ToRendeles" FromRole="Rendelesi_tetel" ToRole="Rendeles" />
+          <NavigationProperty Name="Szindarab" Relationship="Self.FK_Rendelesi_tetel_ToSzindarab" FromRole="Rendelesi_tetel" ToRole="Szindarab" />
+        </EntityType>
+        <EntityType Name="Szindarab">
+          <Key>
+            <PropertyRef Name="SzindarabSK" />
+          </Key>
+          <Property Name="SzindarabSK" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="SzinhazFK" Type="Int32" Nullable="false" />
+          <Property Name="Cim" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Rendezo" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="IdopontFK" Type="Int32" Nullable="false" />
+          <Property Name="Musorido" Type="Int32" Nullable="false" />
+          <Property Name="UjDarabE" Type="Boolean" />
+          <NavigationProperty Name="Idopont" Relationship="Self.FK_Szindarab_ToIdopont" FromRole="Szindarab" ToRole="Idopont" />
+          <NavigationProperty Name="Rendelesi_tetel" Relationship="Self.FK_Rendelesi_tetel_ToSzindarab" FromRole="Szindarab" ToRole="Rendelesi_tetel" />
+          <NavigationProperty Name="Szinhaz" Relationship="Self.FK_Szindarab_ToSzinhaz" FromRole="Szindarab" ToRole="Szinhaz" />
+        </EntityType>
+        <EntityType Name="Szinhaz">
+          <Key>
+            <PropertyRef Name="SzinhazSK" />
+          </Key>
+          <Property Name="SzinhazSK" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Nev" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Helyszin" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Email" Type="String" MaxLength="50" FixedLength="true" Unicode="true" Nullable="false" />
+          <Property Name="Telefon" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Szindarab" Relationship="Self.FK_Szindarab_ToSzinhaz" FromRole="Szinhaz" ToRole="Szindarab" />
+        </EntityType>
+        <EntityType Name="Vevo">
+          <Key>
+            <PropertyRef Name="VevoSK" />
+          </Key>
+          <Property Name="VevoSK" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Teljes_nev" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Eletkor" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Rendeles" Relationship="Self.FK_Rendeles_ToVevo" FromRole="Vevo" ToRole="Rendeles" />
+        </EntityType>
+        <Association Name="FK_Szindarab_ToIdopont">
+          <End Role="Idopont" Type="Self.Idopont" Multiplicity="1" />
+          <End Role="Szindarab" Type="Self.Szindarab" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Idopont">
+              <PropertyRef Name="IdopontSK" />
+            </Principal>
+            <Dependent Role="Szindarab">
+              <PropertyRef Name="IdopontFK" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Rendelesi_tetel_ToJegytipus">
+          <End Role="Jegytipus" Type="Self.Jegytipus" Multiplicity="1" />
+          <End Role="Rendelesi_tetel" Type="Self.Rendelesi_tetel" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Jegytipus">
+              <PropertyRef Name="JegytipusSK" />
+            </Principal>
+            <Dependent Role="Rendelesi_tetel">
+              <PropertyRef Name="JegytipusFK" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Rendeles_ToVevo">
+          <End Role="Vevo" Type="Self.Vevo" Multiplicity="1" />
+          <End Role="Rendeles" Type="Self.Rendeles" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Vevo">
+              <PropertyRef Name="VevoSK" />
+            </Principal>
+            <Dependent Role="Rendeles">
+              <PropertyRef Name="VevoFK" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Rendelesi_tetel_ToRendeles">
+          <End Role="Rendeles" Type="Self.Rendeles" Multiplicity="1" />
+          <End Role="Rendelesi_tetel" Type="Self.Rendelesi_tetel" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Rendeles">
+              <PropertyRef Name="RendelesSK" />
+            </Principal>
+            <Dependent Role="Rendelesi_tetel">
+              <PropertyRef Name="RendelesFK" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Rendelesi_tetel_ToSzindarab">
+          <End Role="Szindarab" Type="Self.Szindarab" Multiplicity="1" />
+          <End Role="Rendelesi_tetel" Type="Self.Rendelesi_tetel" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Szindarab">
+              <PropertyRef Name="SzindarabSK" />
+            </Principal>
+            <Dependent Role="Rendelesi_tetel">
+              <PropertyRef Name="SzindarabFK" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Szindarab_ToSzinhaz">
+          <End Role="Szinhaz" Type="Self.Szinhaz" Multiplicity="1" />
+          <End Role="Szindarab" Type="Self.Szindarab" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Szinhaz">
+              <PropertyRef Name="SzinhazSK" />
+            </Principal>
+            <Dependent Role="Szindarab">
+              <PropertyRef Name="SzinhazFK" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="TicketEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Idopont" EntityType="Self.Idopont" />
+          <EntitySet Name="Jegytipus" EntityType="Self.Jegytipus" />
+          <EntitySet Name="Rendeles" EntityType="Self.Rendeles" />
+          <EntitySet Name="Rendelesi_tetel" EntityType="Self.Rendelesi_tetel" />
+          <EntitySet Name="Szindarab" EntityType="Self.Szindarab" />
+          <EntitySet Name="Szinhaz" EntityType="Self.Szinhaz" />
+          <EntitySet Name="Vevo" EntityType="Self.Vevo" />
+          <AssociationSet Name="FK_Szindarab_ToIdopont" Association="Self.FK_Szindarab_ToIdopont">
+            <End Role="Idopont" EntitySet="Idopont" />
+            <End Role="Szindarab" EntitySet="Szindarab" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Rendelesi_tetel_ToJegytipus" Association="Self.FK_Rendelesi_tetel_ToJegytipus">
+            <End Role="Jegytipus" EntitySet="Jegytipus" />
+            <End Role="Rendelesi_tetel" EntitySet="Rendelesi_tetel" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Rendeles_ToVevo" Association="Self.FK_Rendeles_ToVevo">
+            <End Role="Vevo" EntitySet="Vevo" />
+            <End Role="Rendeles" EntitySet="Rendeles" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Rendelesi_tetel_ToRendeles" Association="Self.FK_Rendelesi_tetel_ToRendeles">
+            <End Role="Rendeles" EntitySet="Rendeles" />
+            <End Role="Rendelesi_tetel" EntitySet="Rendelesi_tetel" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Rendelesi_tetel_ToSzindarab" Association="Self.FK_Rendelesi_tetel_ToSzindarab">
+            <End Role="Szindarab" EntitySet="Szindarab" />
+            <End Role="Rendelesi_tetel" EntitySet="Rendelesi_tetel" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Szindarab_ToSzinhaz" Association="Self.FK_Szindarab_ToSzinhaz">
+            <End Role="Szinhaz" EntitySet="Szinhaz" />
+            <End Role="Szindarab" EntitySet="Szindarab" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="TicketModelStoreContainer" CdmEntityContainer="TicketEntities">
+          <EntitySetMapping Name="Idopont">
+            <EntityTypeMapping TypeName="TicketModel.Idopont">
+              <MappingFragment StoreEntitySet="Idopont">
+                <ScalarProperty Name="IdopontSK" ColumnName="IdopontSK" />
+                <ScalarProperty Name="EloadasNap" ColumnName="EloadasNap" />
+                <ScalarProperty Name="Kezdes" ColumnName="Kezdes" />
+                <ScalarProperty Name="Befejezes" ColumnName="Befejezes" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Jegytipus">
+            <EntityTypeMapping TypeName="TicketModel.Jegytipus">
+              <MappingFragment StoreEntitySet="Jegytipus">
+                <ScalarProperty Name="JegytipusSK" ColumnName="JegytipusSK" />
+                <ScalarProperty Name="Megnevezes" ColumnName="Megnevezes" />
+                <ScalarProperty Name="Egysegar" ColumnName="Egysegar" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Rendeles">
+            <EntityTypeMapping TypeName="TicketModel.Rendeles">
+              <MappingFragment StoreEntitySet="Rendeles">
+                <ScalarProperty Name="RendelesSK" ColumnName="RendelesSK" />
+                <ScalarProperty Name="VevoFK" ColumnName="VevoFK" />
+                <ScalarProperty Name="Fizetesi_mod" ColumnName="Fizetesi_mod" />
+                <ScalarProperty Name="Rend_datum" ColumnName="Rend_datum" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Rendelesi_tetel">
+            <EntityTypeMapping TypeName="TicketModel.Rendelesi_tetel">
+              <MappingFragment StoreEntitySet="Rendelesi_tetel">
+                <ScalarProperty Name="TetelekSK" ColumnName="TetelekSK" />
+                <ScalarProperty Name="RendelesFK" ColumnName="RendelesFK" />
+                <ScalarProperty Name="SzindarabFK" ColumnName="SzindarabFK" />
+                <ScalarProperty Name="JegytipusFK" ColumnName="JegytipusFK" />
+                <ScalarProperty Name="Mennyiség" ColumnName="Mennyiség" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Szindarab">
+            <EntityTypeMapping TypeName="TicketModel.Szindarab">
+              <MappingFragment StoreEntitySet="Szindarab">
+                <ScalarProperty Name="SzindarabSK" ColumnName="SzindarabSK" />
+                <ScalarProperty Name="SzinhazFK" ColumnName="SzinhazFK" />
+                <ScalarProperty Name="Cim" ColumnName="Cim" />
+                <ScalarProperty Name="Rendezo" ColumnName="Rendezo" />
+                <ScalarProperty Name="IdopontFK" ColumnName="IdopontFK" />
+                <ScalarProperty Name="Musorido" ColumnName="Musorido" />
+                <ScalarProperty Name="UjDarabE" ColumnName="UjDarabE" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Szinhaz">
+            <EntityTypeMapping TypeName="TicketModel.Szinhaz">
+              <MappingFragment StoreEntitySet="Szinhaz">
+                <ScalarProperty Name="SzinhazSK" ColumnName="SzinhazSK" />
+                <ScalarProperty Name="Nev" ColumnName="Nev" />
+                <ScalarProperty Name="Helyszin" ColumnName="Helyszin" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="Telefon" ColumnName="Telefon" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Vevo">
+            <EntityTypeMapping TypeName="TicketModel.Vevo">
+              <MappingFragment StoreEntitySet="Vevo">
+                <ScalarProperty Name="VevoSK" ColumnName="VevoSK" />
+                <ScalarProperty Name="Teljes_nev" ColumnName="Teljes_nev" />
+                <ScalarProperty Name="Eletkor" ColumnName="Eletkor" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
